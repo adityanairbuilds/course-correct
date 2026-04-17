@@ -14,6 +14,14 @@ import { CATEGORY_META, RatingCategory, RatingOption } from "../../lib/ratingOpt
 
 const CATEGORIES: RatingCategory[] = ["overall", "homeworkLoad", "hoursPerWeek"];
 
+const VALUE_COLORS: Record<number, string> = {
+  1: "#22c55e",
+  2: "#84cc16",
+  3: "#f59e0b",
+  4: "#f97316",
+  5: "#ef4444",
+};
+
 function DistributionCard({
   title,
   options,
@@ -40,7 +48,7 @@ function DistributionCard({
           <View key={opt.value} style={styles.row}>
             <Text style={styles.optionLabel}>{opt.label}</Text>
             <View style={styles.barTrack}>
-              <View style={[styles.barFill, { width: `${barPct}%` }]} />
+              <View style={[styles.barFill, { width: `${barPct}%`, backgroundColor: VALUE_COLORS[opt.value] }]} />
             </View>
             <Text style={styles.pctLabel}>
               {count > 0 ? `${Math.round(pct)}%` : "—"}

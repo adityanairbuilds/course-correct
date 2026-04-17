@@ -2,13 +2,13 @@ import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB9cqd8Dn7HNIJiTFXez6DmY2J0kVZgt8c",
-  authDomain: "ratemycourse-e0b8d.firebaseapp.com",
-  projectId: "ratemycourse-e0b8d",
-  storageBucket: "ratemycourse-e0b8d.firebasestorage.app",
-  messagingSenderId: "346469082620",
-  appId: "1:346469082620:web:165b495ae392315cfa3e79",
-  measurementId: "G-0TVBZTZ774"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 
