@@ -29,6 +29,24 @@ export const HOURS_OPTIONS: RatingOption[] = [
   { label: "7+ hrs", value: 5 },
 ];
 
+export interface Tag {
+  value: string;
+  label: string;
+  description: string;
+}
+
+export const TAGS: Tag[] = [
+  { value: "hands-on", label: "Hands-On", description: "Course involves lab work, studio sessions, or other hands-on activities." },
+  { value: "project-based", label: "Project-Based", description: "Grade is primarily based on projects rather than tests." },
+  { value: "writing-intensive", label: "Writing-Intensive", description: "Requires frequent or lengthy written assignments and essays." },
+  { value: "frequent-tests", label: "Frequent Tests", description: "Regular quizzes and tests throughout the semester." },
+  { value: "group-work", label: "Group Work", description: "Involves significant collaborative group assignments." },
+  { value: "memorization-heavy", label: "Memorization-Heavy", description: "Requires memorizing large amounts of content." },
+  { value: "curved", label: "Curved", description: "Grades are curved, making it easier to achieve a higher grade." },
+  { value: "extra-credit", label: "Extra Credit", description: "Extra credit opportunities are available to boost your grade." },
+  { value: "dual-enrollment", label: "Dual Enrollment", description: "This course counts for college credit." },
+];
+
 export const CATEGORY_META: Record<
   RatingCategory,
   { label: string; options: RatingOption[] }

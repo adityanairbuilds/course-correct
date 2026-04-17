@@ -93,8 +93,8 @@ export default function About() {
         <View style={styles.divider} />
         <View style={styles.devRow}>
           <Text style={styles.devLabel}>Contact</Text>
-          <TouchableOpacity onPress={() => Linking.openURL("mailto:wtvaditya@gmail.com")}>
-            <Text style={styles.devLink}>wtvaditya@gmail.com</Text>
+          <TouchableOpacity onPress={() => Linking.openURL("mailto:support.coursecorrect@gmail.com")}>
+            <Text style={styles.devLink}>support.coursecorrect@gmail.com</Text>
           </TouchableOpacity>
         </View>
       </Section>

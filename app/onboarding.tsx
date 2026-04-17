@@ -25,19 +25,27 @@ export default function Onboarding() {
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [selecting, setSelecting] = useState<string | null>(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const q = query(collection(db, "schools"), orderBy("name"));
-    getDocs(q)
-      .then((snap) => {
-        const data: School[] = snap.docs.map((d) => ({
-          id: d.id,
-          ...(d.data() as Omit<School, "id">),
-        }));
-        setSchools(data);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  async function fetchSchools() {
+    setLoading(true);
+    setError(false);
+    try {
+      const q = query(collection(db, "schools"), orderBy("name"));
+      const snap = await getDocs(q);
+      const data: School[] = snap.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Omit<School, "id">),
+      }));
+      setSchools(data);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { fetchSchools(); }, []);
 
   async function selectSchool(school: School) {
     setSelecting(school.id);
@@ -54,6 +62,14 @@ export default function Onboarding() {
 
       {loading ? (
         <ActivityIndicator size="large" color="#1a56db" style={{ marginTop: 40 }} />
+      ) : error ? (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorText}>Could not load schools.</Text>
+          <Text style={styles.errorSub}>Check your connection and try again.</Text>
+          <TouchableOpacity style={styles.retryBtn} onPress={fetchSchools}>
+            <Text style={styles.retryText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <FlatList
           data={schools}
@@ -131,5 +147,34 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#888",
     marginTop: 2,
+  },
+  errorBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  errorText: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 8,
+  },
+  errorSub: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 24,
+    textAlign: "center",
+  },
+  retryBtn: {
+    backgroundColor: "#1a56db",
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  retryText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 15,
   },
 });

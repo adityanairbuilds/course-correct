@@ -32,6 +32,7 @@ export default function Courses() {
   const navigation = useNavigation();
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [schoolName, setSchoolName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,44 +50,50 @@ export default function Courses() {
 
   const loadCourses = useCallback(async () => {
     setLoading(true);
-    const schoolId = await getSavedSchoolId();
-    if (!schoolId) {
-      router.replace("/onboarding");
-      return;
+    setError(false);
+    try {
+      const schoolId = await getSavedSchoolId();
+      if (!schoolId) {
+        router.replace("/onboarding");
+        return;
+      }
+
+      const [coursesSnap, schoolsSnap] = await Promise.all([
+        getDocs(
+          query(
+            collection(db, "courses"),
+            where("schoolId", "==", schoolId),
+            orderBy("department"),
+            orderBy("name")
+          )
+        ),
+        getDocs(collection(db, "schools")),
+      ]);
+
+      const school = schoolsSnap.docs.find((d) => d.id === schoolId);
+      if (school) setSchoolName(school.data().name);
+
+      const courses: Course[] = coursesSnap.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as Omit<Course, "id">),
+      }));
+
+      const grouped: Record<string, Course[]> = {};
+      for (const c of courses) {
+        if (!grouped[c.department]) grouped[c.department] = [];
+        grouped[c.department].push(c);
+      }
+
+      const secs: Section[] = Object.keys(grouped)
+        .sort()
+        .map((dept) => ({ title: dept, data: grouped[dept] }));
+
+      setSections(secs);
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
-
-    const [coursesSnap, schoolsSnap] = await Promise.all([
-      getDocs(
-        query(
-          collection(db, "courses"),
-          where("schoolId", "==", schoolId),
-          orderBy("department"),
-          orderBy("name")
-        )
-      ),
-      getDocs(collection(db, "schools")),
-    ]);
-
-    const school = schoolsSnap.docs.find((d) => d.id === schoolId);
-    if (school) setSchoolName(school.data().name);
-
-    const courses: Course[] = coursesSnap.docs.map((d) => ({
-      id: d.id,
-      ...(d.data() as Omit<Course, "id">),
-    }));
-
-    const grouped: Record<string, Course[]> = {};
-    for (const c of courses) {
-      if (!grouped[c.department]) grouped[c.department] = [];
-      grouped[c.department].push(c);
-    }
-
-    const secs: Section[] = Object.keys(grouped)
-      .sort()
-      .map((dept) => ({ title: dept, data: grouped[dept] }));
-
-    setSections(secs);
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -153,6 +160,14 @@ export default function Courses() {
 
       {loading ? (
         <ActivityIndicator size="large" color="#1a56db" style={{ marginTop: 60 }} />
+      ) : error ? (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorText}>Could not load courses.</Text>
+          <Text style={styles.errorSub}>Check your connection and try again.</Text>
+          <TouchableOpacity style={styles.retryBtn} onPress={loadCourses}>
+            <Text style={styles.retryText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <SectionList
           sections={filteredSections}
@@ -411,5 +426,34 @@ const styles = StyleSheet.create({
   cancelBtnText: {
     color: "#999",
     fontSize: 14,
+  },
+  errorBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 32,
+  },
+  errorText: {
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#111",
+    marginBottom: 8,
+  },
+  errorSub: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 24,
+    textAlign: "center",
+  },
+  retryBtn: {
+    backgroundColor: "#1a56db",
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  retryText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 15,
   },
 });

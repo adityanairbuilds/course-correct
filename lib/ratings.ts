@@ -14,6 +14,7 @@ export interface RatingData {
   overall: number;
   homeworkLoad: number;
   hoursPerWeek: number;
+  tags: string[];
 }
 
 export interface CourseAverages {
@@ -30,6 +31,7 @@ export interface CourseDistributions {
   overall: CategoryCounts;
   homeworkLoad: CategoryCounts;
   hoursPerWeek: CategoryCounts;
+  tags: Record<string, number>;
   total: number;
 }
 
@@ -49,6 +51,7 @@ export async function getUserRating(
     overall: d.overall,
     homeworkLoad: d.homeworkLoad,
     hoursPerWeek: d.hoursPerWeek,
+    tags: d.tags ?? [],
   };
 }
 
@@ -74,6 +77,7 @@ export async function getCourseDistributions(
     overall: empty(),
     homeworkLoad: empty(),
     hoursPerWeek: empty(),
+    tags: {},
     total: 0,
   };
 
@@ -85,6 +89,9 @@ export async function getCourseDistributions(
     result.overall[data.overall] = (result.overall[data.overall] ?? 0) + 1;
     result.homeworkLoad[data.homeworkLoad] = (result.homeworkLoad[data.homeworkLoad] ?? 0) + 1;
     result.hoursPerWeek[data.hoursPerWeek] = (result.hoursPerWeek[data.hoursPerWeek] ?? 0) + 1;
+    (data.tags ?? []).forEach((tag: string) => {
+      result.tags[tag] = (result.tags[tag] ?? 0) + 1;
+    });
     result.total += 1;
   });
 
