@@ -41,6 +41,16 @@ export default function About() {
         </Para>
       </Section>
 
+      <Section title="Privacy Policy">
+        <Para>
+          This app does not collect any personally identifiable information. Read our full
+          privacy policy for details.
+        </Para>
+        <TouchableOpacity onPress={() => Linking.openURL("https://adityanairbuilds.github.io/course-correct/privacy.html")}>
+          <Text style={styles.devLink}>View Privacy Policy</Text>
+        </TouchableOpacity>
+      </Section>
+
       <Section title="Terms and Disclaimer">
         <Para>
           All ratings are submitted voluntarily and anonymously by students. Course Correct does
