@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file assets/icon.png)",
+      "Bash(python -c \"from PIL import Image; img = Image.open\\('assets/icon.png'\\); print\\(img.size\\)\")",
+      "Bash(identify assets/icon.png)"
+    ]
+  }
+}

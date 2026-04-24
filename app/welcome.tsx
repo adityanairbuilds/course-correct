@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { markWelcomeSeen } from "../lib/user";
@@ -32,7 +32,7 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.top}>
           <Image source={require("../assets/icon.png")} style={styles.logo} />
           <Text style={styles.appName}>Course Correct</Text>
@@ -60,7 +60,7 @@ export default function Welcome() {
         <TouchableOpacity style={styles.btn} onPress={handleGetStarted}>
           <Text style={styles.btnText}>Get Started</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     gap: 24,
     marginTop: 32,
     marginBottom: 32,
-    flex: 1,
   },
   featureRow: {
     flexDirection: "row",
